@@ -67,12 +67,13 @@ public class DataServiceImp implements DataService {
 			Object user = session.getAttribute("info");
 			if(user != null) {
 				Map<String, Object> userMap = (Map<String, Object>) user;
-				String url = "/res/files/" + userMap.get("num") + "/";
-				String path = ROOT + url;
+				String url = "res/files/" + userMap.get("num") + "/";
+//				String path = ROOT + url;
+				String path = session.getServletContext().getRealPath(url);
 				File dir = new File(path);
 				if(!dir.isDirectory()) {dir.mkdirs();}
 				path += file.getOriginalFilename();
-				url += file.getOriginalFilename();
+				url += "/" + file.getOriginalFilename();
 				FileUtils.copyInputStreamToFile(file.getInputStream(), new File(path));
 				userMap.put("img", url);
 				System.out.println(userMap);
