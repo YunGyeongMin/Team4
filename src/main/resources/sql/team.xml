@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team">
+  
+	<insert id="signup_user" parameterType="Map">
+		<selectKey keyProperty="num" resultType="Integer" order="AFTER">
+			SELECT CASE WHEN MAX(num) IS NULL THEN 0 
+			            ELSE MAX(num) 
+			        END AS num 
+			  FROM b_users
+		</selectKey>
+		INSERT INTO b_users 
+			(name, email, PASSWORD, phone) 
+		VALUES 
+			(#{name}, #{email}, #{password}, #{phone})
+	</insert>
+	
+	<insert id="signup_auth" parameterType="Map">
+		INSERT INTO b_authorities (num) VALUES (#{num})
+	</insert>
+	
+	<insert id="signup_interests" parameterType="Map">
+		INSERT INTO b_interests (num, target_num)
+		SELECT num, ${num} FROM v_interests
+	</insert>
+	
+	<select id="userInterests" parameterType="Map" resultType="Map">
+		SELECT b.num, b.interest_name, a.state
+		  FROM b_interests AS a
+		 INNER JOIN v_interests AS b
+		   ON (a.num = b.num)
+		 WHERE a.target_num = #{num}
+		 <if test="type != null">
+		   AND a.state = 1 
+		 </if>
+	</select>
+
+	<select id="userInfo" parameterType="String" resultType="Map">
+  		select * from b_users where 1 = 1 
+  		<if test="num != null">
+  			and num = ${num}
+  		</if>
+	</select>
+	
+	<select id="getMessage" parameterType="String" resultType="Map">
+		SELECT a.num,  a.message,
+		       b.name, b.img
+		  FROM b_message AS a 
+		 INNER JOIN b_users AS b
+		   ON (a.reg_num = b.num)
+		 WHERE a.target_num = #{num}
+		 ORDER BY 1 desc
+	</select>
+	
+	<insert id="setMessage" parameterType="Map">
+		INSERT INTO b_message 
+			(target_num, reg_num, message) 
+		VALUES 
+			(#{target_num},#{reg_num},#{message})
+	</insert>
+	
+	<update id="setImage" parameterType="Map">
+		UPDATE b_users 
+		   SET img = #{img} 
+		 WHERE num = #{num}
+	</update>
+	
+	<update id="setUserInfo" parameterType="Map">
+		UPDATE b_users SET 
+			   name = #{name} 
+			  ,email = #{email} 
+	    <if test="pwd != ''"> 
+			  ,PASSWORD = #{pwd} 
+	    </if>
+	    <if test="phone != ''"> 
+			  ,phone = #{phone} 
+	    </if>
+		 WHERE num = #{reg_num}
+	</update>
+	
+	<update id="setUserInterests" parameterType="Map">
+		UPDATE b_interests
+		   SET state = #{state}
+		 WHERE num = #{num}
+		   AND target_num = #{reg_num}
+	</update>
+  
+</mapper>
