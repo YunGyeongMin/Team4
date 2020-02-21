@@ -5,7 +5,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Team4</title>
+	<title>Test</title>
 	<link rel="shortcut icon" type="image/x-icon" href="/res/img/icon_goodee.png">
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/lib/bootstrap/3.4.1/css/bootstrap.min.css">
